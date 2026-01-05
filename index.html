@@ -1,9 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Créatif</title>
+    <title>Studio Créatif </title>
+    <link rel="icon" type="image/png" href="file:///media/fuse/drivefs-4c4060009d1026651f4a3f2dc442ada9/root/!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20!%20%20!%20!%20!%20!%20%20JS/creative%20studio/icon.png">
+    
     <style>
         :root {
             --bg-dark: #121212; --bg-panel: #1e1e1e; --primary: #bb86fc;
@@ -11,13 +13,32 @@
             --text-muted: #a0a0a0; --border: #333; --active-mode: #3700b3;
         }
 
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-
-        header { background-color: var(--bg-panel); padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        /* HEADER AVEC LOGO */
+        header { 
+            background-color: var(--bg-panel); 
+            padding: 0.8rem 2rem; 
+            border-bottom: 1px solid var(--border); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            z-index: 100; 
+        }
         
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            height: 40px; /* Taille ajustable */
+            width: auto;
+            border-radius: 4px;
+        }
+
         .workspace { display: flex; flex: 1; overflow: hidden; }
         
         /* SIDEBAR */
@@ -32,19 +53,14 @@
         .mode-btn:hover { background: #333; }
         .mode-btn.active { background: var(--active-mode); color: white; border-color: var(--primary); }
 
-
-        /* PANNEAUX D'OPTIONS */
         .tool-group { display: none; flex-direction: column; gap: 15px; background: #252525; padding: 15px; border-radius: 8px; border-left: 4px solid var(--secondary); }
         .tool-group.visible { display: flex; }
 
-
         .editor-area { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; padding: 20px; background-color: #161616; overflow: auto; }
         
-        /* VISUALS */
         canvas#main-canvas { border: 1px solid var(--border); max-width: 95%; max-height: 80vh; background: white; cursor: crosshair; display: none; }
         video#video-preview, textarea#text-editor { max-width: 95%; max-height: 70vh; display: none; }
         textarea#text-editor { width: 90%; height: 80%; background: #fff; color: #000; padding: 20px; font-size: 1.1rem; border-radius: 8px; }
-
 
         /* DICTAPHONE UI */
         #audio-center-ui { display: none; flex-direction: column; align-items: center; gap: 25px; width: 100%; }
@@ -55,7 +71,6 @@
         #btn-stop-rec { background: #fff; color: #000; display: none; }
         #audio-preview { margin-top: 20px; display: none; filter: invert(0.9); }
 
-
         .btn { background: var(--primary); color: #000; border: none; padding: 10px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
         .filter-btn { background: #444; color: white; border: none; padding: 6px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; }
@@ -64,15 +79,16 @@
 </head>
 <body>
 
-
     <header>
-        <h1 style="color: var(--primary); letter-spacing: 1px;">STUDIO CRÉATIF</h1>
+        <div class="header-left">
+            <img src="icon.png" alt="Logo" class="logo-img">
+            <h1 style="color: var(--primary); letter-spacing: 1px;">STUDIO CRÉATIF</h1>
+        </div>
         <div id="file-actions" style="display:none; gap: 10px;">
             <button id="import-btn" class="btn" style="background:transparent; border:1px solid var(--primary); color:var(--primary);" onclick="document.getElementById('file-input').click()">📂 Importer</button>
             <button class="btn" onclick="saveWork()">💾 Sauvegarder</button>
         </div>
     </header>
-
 
     <div class="workspace">
         <aside class="sidebar">
@@ -83,9 +99,7 @@
                 <button class="mode-btn" onclick="switchMode('text')" id="mode-text">📝 Texte</button>
             </div>
 
-
             <hr style="border: 0; border-top: 1px solid var(--border); margin: 10px 0;">
-
 
             <div id="tools-image" class="tool-group">
                 <label>🎨 Filtres</label>
@@ -102,13 +116,10 @@
                 <button class="btn" style="background:#444; color:white; font-size: 0.8rem;" onclick="clearCanvas()">🗑️ Effacer Dessins</button>
             </div>
 
-
             <div id="tools-audio" class="tool-group">
-                <p style="font-size:0.8rem; color:var(--text-muted)">Utilisez les contrôles au centre de l'écran pour enregistrer votre voix.</p>
                 <label>Statut</label>
                 <div id="status-label" style="font-size:0.9rem; color:var(--secondary)">Prêt</div>
             </div>
-
 
             <div id="tools-video" class="tool-group">
                 <label>⏩ Vitesse Lecture</label>
@@ -116,12 +127,10 @@
                 <span id="speed-val">1.0x</span>
             </div>
 
-
             <div id="tools-text" class="tool-group">
-                <p style="font-size:0.8rem; color:var(--text-muted)">Éditeur de texte brut. Les modifications sont enregistrées dans le fichier exporté.</p>
+                <p style="font-size:0.8rem; color:var(--text-muted)">Éditeur de texte brut activé.</p>
             </div>
         </aside>
-
 
         <main class="editor-area">
             <div id="empty-state" style="text-align:center">
@@ -129,9 +138,7 @@
                 <p style="color:var(--text-muted)">Sélectionnez un mode à gauche pour commencer</p>
             </div>
 
-
             <canvas id="main-canvas"></canvas>
-
 
             <div id="audio-center-ui">
                 <canvas id="visualizer"></canvas>
@@ -142,15 +149,12 @@
                 <audio id="audio-preview" controls></audio>
             </div>
 
-
             <video id="video-preview" controls></video>
             <textarea id="text-editor" spellcheck="false"></textarea>
         </main>
     </div>
 
-
     <input type="file" id="file-input" style="display:none">
-
 
     <script>
         let currentMode = null;
@@ -159,47 +163,33 @@
         let drawing = false;
         let baseImage = null;
 
-
         let audioCtx, analyser, dataArray, animationId, mediaRecorder, audioChunks = [];
-
 
         function switchMode(mode) {
             currentMode = mode;
-            
-            // 1. Activer le bouton dans la sidebar
             document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('mode-' + mode).classList.add('active');
-            
-            // 2. Afficher le panneau d'options correspondant
             document.querySelectorAll('.tool-group').forEach(g => g.classList.remove('visible'));
             const targetTool = document.getElementById('tools-' + mode);
             if(targetTool) targetTool.classList.add('visible');
 
-
-            // 3. Afficher les actions globales
             document.getElementById('file-actions').style.display = 'flex';
             document.getElementById('empty-state').style.display = 'none';
             document.getElementById('import-btn').style.display = (mode === 'audio') ? 'none' : 'inline-block';
 
-
             fullReset();
 
-
-            // 4. Activer la zone d'affichage
             if(mode === 'audio') document.getElementById('audio-center-ui').style.display = 'flex';
             if(mode === 'image') canvas.style.display = 'block';
             if(mode === 'video') document.getElementById('video-preview').style.display = 'block';
             if(mode === 'text') document.getElementById('text-editor').style.display = 'block';
         }
 
-
         function fullReset() {
             [canvas, document.getElementById('video-preview'), document.getElementById('text-editor'), document.getElementById('audio-center-ui')].forEach(el => el.style.display = 'none');
-            
             const aud = document.getElementById('audio-preview');
             aud.pause(); aud.style.display = 'none';
             document.getElementById('video-preview').pause();
-            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             canvas.style.filter = "none";
             document.getElementById('text-editor').value = "";
@@ -207,21 +197,17 @@
             if(audioCtx) audioCtx.close();
         }
 
-
-        // --- AUDIO VISUALIZER ---
+        // Logic Visualizer, Rec, Files, Drawing... (Idem code précédent)
         async function setupVisualizer(stream) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioCtx.createMediaStreamSource(stream);
             analyser = audioCtx.createAnalyser();
             analyser.fftSize = 128;
             source.connect(analyser);
-
-
             const bufferLength = analyser.frequencyBinCount;
             dataArray = new Uint8Array(bufferLength);
             const vCanvas = document.getElementById('visualizer');
             const vCtx = vCanvas.getContext('2d');
-
 
             function draw() {
                 animationId = requestAnimationFrame(draw);
@@ -239,7 +225,6 @@
             }
             draw();
         }
-
 
         document.getElementById('btn-start-rec').onclick = async () => {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -259,7 +244,6 @@
             document.getElementById('status-label').innerText = "🔴 Enregistrement...";
         };
 
-
         document.getElementById('btn-stop-rec').onclick = () => {
             mediaRecorder.stop();
             document.getElementById('btn-start-rec').style.display = 'flex';
@@ -267,12 +251,9 @@
             document.getElementById('status-label').innerText = "Prêt";
         };
 
-
-        // --- FICHIERS ---
         document.getElementById('file-input').onchange = (e) => {
             const file = e.target.files[0];
             if (!file) return;
-            
             if (currentMode === 'image') {
                 const reader = new FileReader();
                 reader.onload = (event) => {
@@ -293,8 +274,6 @@
             }
         };
 
-
-        // --- DESSIN ---
         canvas.onmousedown = () => drawing = true;
         canvas.onmouseup = () => { drawing = false; ctx.beginPath(); };
         canvas.onmousemove = (e) => {
@@ -308,7 +287,6 @@
             ctx.moveTo((e.clientX - rect.left) * (canvas.width/rect.width), (e.clientY - rect.top) * (canvas.height/rect.height));
         };
 
-
         function setFilter(f) { canvas.style.filter = f; }
         function clearCanvas() { if(baseImage) ctx.drawImage(baseImage, 0, 0); else ctx.clearRect(0,0,canvas.width,canvas.height); }
         function updateVideo() { 
@@ -316,7 +294,6 @@
             document.getElementById('video-preview').playbackRate = speed;
             document.getElementById('speed-val').innerText = speed + "x";
         }
-
 
         function saveWork() {
             let link = document.createElement('a');
@@ -333,7 +310,7 @@
                 link.download = 'studio-note.txt';
                 link.href = URL.createObjectURL(blob);
             } else {
-                alert("Pour l'audio et la vidéo, utilisez les contrôles natifs (clic droit ou menu du lecteur) pour enregistrer.");
+                alert("Utilisez les options du lecteur pour sauvegarder l'audio/vidéo.");
                 return;
             }
             link.click();
@@ -341,4 +318,3 @@
     </script>
 </body>
 </html>
-
